@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<header>
+    <script src="main.js"></script>
+</header>
+<body onload="load()">
+    <section id="setup" hidden="false">
+        <input type="file" id="rules" accept=".json" oninput="changerules()">Default Rules</input>
+        <input type="checkbox" id="userules"></input>
+        <p></p>
+        <input type="file" id="P1Deck" accept=".json" oninput="checkdeck('P1Deck')">Player 1 Deck </input><p1 id="P1DeckInvalid">InValid</p1>
+        <p></p>
+        <input type="file" id="P2Deck" accept=".json" oninput="checkdeck('P2Deck')">Player 2 Deck </input><p1 id="P2DeckInvalid">InValid</p1>
+        <P></P>
+        <button onclick="start()">Start Game</button>
+
+
+    </section>
+
+
+    <section id="game" hidden="true">
+
+        <section id="controls">
+            <button onclick="roll()">Roll</button>
+            <input type="checkbox" id="autoroll">AutoRoll</input>
+        </section>
+        
+        
+        <section id="P1Deck">
+            
+        </section>
+        <section id="P2Deck">
+            
+            <!-- cards -->
+            <section id="P1">
+                <img id="Icon" width="256" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.ML2_TLkvZLNDjoHv_gsboAAAAA%26pid%3DApi&f=1&ipt=ce6172f718d285a0aca087ba8e7ac1ad4a60d3aa1193e68e4fe710213835e3bc&ipo=images">
+                <P></P>
+                <p1 id="Health">OH</p1>
+                <p1 id="Cost">OC</p1>
+                <p1 id="rRoll">OR</p1>
+        <p1 id="gRoll"></p1>
+        <p1 id="bRoll"></p1>
+    </section>
+    <p1 id="redRoll">R</p1>
+    <p1 id="greRoll">G</p1>
+    <p1 id="bluRoll">B</p1>
+    <section id="P2" >
+        <img id="Icon" width="256" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.upE9Htem55ODhn5LcjcAXAAAAA%26pid%3DApi&f=1&ipt=3992403bd68d02fad7c1e25809d30f19936cf599c705d736062f0667c6f62579&ipo=images">
+        <P></P>
+        <p1 id="Health">UH</p1>
+        <p1 id="Cost">UC</p1>
+        <p1 id="rRoll">UR</p1>
+        <p1 id="gRoll"></p1>
+        <p1 id="bRoll"></p1>
+    </section>
+    <p id="winner"></p>
+</section>
+</section>
+
+
+</body>
