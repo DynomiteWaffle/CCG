@@ -8,13 +8,24 @@ var settings = {
 	"cardMaxCost":18,
 	"cardMinCost":1,
 	"attackCost":1,
-  "maxCards":6,
+	"types":{
+    "fire":{"strong":["plant"],"weak":["water"]},
+    "plant":{"strong":["water"],"weak":["fire"]},
+    "water":{"strong":["fire"],"weak":["plant"]}
+  }
 }
-var p1Deck = null
-var p2Deck = null
-var p1Index = 0
-var p2Index = 0
 var turn = Math.floor(Math.random()*2)
+
+var Decks = [
+
+  null,
+  null
+]
+var Index = [
+
+  0,
+  0
+]
 
 
 
@@ -24,37 +35,33 @@ function load(){
 }
 
 function updateCardsVisual(){
-  if(p1Deck.length == 0){return}
-  if(p2Deck.length == 0){return}
+  if(Decks[0].length == 0){return}
+  if(Decks[1].length == 0){return}
   // TODO display types
-  // p1
-  document.getElementById("P1").children.namedItem("Icon").src = p1Deck[p1Index].imageurl
-  // document.getElementById("P1").children.namedItem("Icon").src = p1Deck[p1Index].type
-  document.getElementById("P1").children.namedItem("Health").innerHTML = p1Deck[p1Index].health
-  document.getElementById("P1").children.namedItem("Cost").innerHTML = p1Deck[p1Index].cost
-  document.getElementById("P1").children.namedItem("rRoll").innerHTML = p1Deck[p1Index].fire  
-  document.getElementById("P1").children.namedItem("gRoll").innerHTML = p1Deck[p1Index].plant
-  document.getElementById("P1").children.namedItem("bRoll").innerHTML = p1Deck[p1Index].water
-  // p2
-  document.getElementById("P2").children.namedItem("Icon").src = p2Deck[p2Index].imageurl
-  // document.getElementById("P2").children.namedItem("Icon").src = p2Deck[p2Index].type
-  document.getElementById("P2").children.namedItem("Health").innerHTML = p2Deck[p2Index].health
-  document.getElementById("P2").children.namedItem("Cost").innerHTML = p2Deck[p2Index].cost
-  document.getElementById("P2").children.namedItem("rRoll").innerHTML = p2Deck[p2Index].fire  
-  document.getElementById("P2").children.namedItem("gRoll").innerHTML = p2Deck[p2Index].plant
-  document.getElementById("P2").children.namedItem("bRoll").innerHTML = p2Deck[p2Index].water
+  for(p=0;p<2;p++){
+
+    // p1
+    document.getElementById("P"+(p+1)).children.namedItem("Icon").alt = Decks[p][Index[p]].name
+    document.getElementById("P"+(p+1)).children.namedItem("Icon").src = Decks[p][Index[p]].imageurl
+    // document.getElementById("P1").children.namedItem("Icon").src = p1Deck[p1Index].type
+    document.getElementById("P"+(p+1)).children.namedItem("Health").innerHTML = Decks[p][Index[p]].health
+    document.getElementById("P"+(p+1)).children.namedItem("Cost").innerHTML = Decks[p][Index[p]].cost
+    document.getElementById("P"+(p+1)).children.namedItem("rRoll").innerHTML = Decks[p][Index[p]].fire  
+    document.getElementById("P"+(p+1)).children.namedItem("gRoll").innerHTML = Decks[p][Index[p]].plant
+    document.getElementById("P"+(p+1)).children.namedItem("bRoll").innerHTML = Decks[p][Index[p]].water
+  }
 }
 
 
 function start(){
   document.getElementById("autoroll").checked = false
-  if(p1Deck == null){console.log("No P1 Deck");return}
-  if(p2Deck == null){console.log("No P2 Deck");return}
+  if(Decks[0] == null){console.log("No P1 Deck");return}
+  if(Decks[1] == null){console.log("No P2 Deck");return}
   document.getElementById("setup").hidden = true
   document.getElementById("game").hidden = false
   // setup game
-  p1Index = Math.floor(Math.random()*p1Deck.length)
-  p2Index = Math.floor(Math.random()*p2Deck.length)
+  Index[0] = Math.floor(Math.random()*Decks[0].length)
+  Index[1] = Math.floor(Math.random()*Decks[1].length)
   autoroll()
   // set visuals
   updateCardsVisual()
@@ -62,18 +69,28 @@ function start(){
 
 function roll(){
   // win condition
-  if(p1Deck.length == 0){
+  if(Decks[0].length == 0){
     document.getElementById("winner").hidden = false
     document.getElementById("winner").innerHTML = "Player 2 Wins"
     return
   }
-  if(p2Deck.length == 0){
+  if(Decks[1].length == 0){
     document.getElementById("winner").hidden = false
     document.getElementById("winner").innerHTML = "Player 1 Wins"
     return
   }
 
-  // TODO type system damage
+  var cur = 0
+  var opp = 0
+  if(turn == 0){
+    cur = 0
+    opp = 1
+  }else{
+    cur = 1
+    opp=0
+  }
+
+
   console.log("ROLL")
   var r = Math.floor(Math.random()*6)+1
   var g = Math.floor(Math.random()*6)+1
@@ -85,30 +102,42 @@ function roll(){
   // 
   // apply damage
   var damage = 0
-  if(turn == 0){
-    // p1
-    if(r >= p1Deck[p1Index].fire){damage++}
-    if(g >= p1Deck[p1Index].green){damage++}
-    if(b >= p1Deck[p1Index].water){damage++}
-    // damage
-    p2Deck[p2Index].health -= damage
+  // TODO type system damage
+  console.log("type: "+Decks[cur][Index[cur]].type)
+    for(s=0;s<settings.types[Decks[cur][Index[cur]].type].strong.length;s++){
+      if(Decks[opp][Index[opp]].type==settings.types[Decks[cur][Index[cur]].type].strong[s]){
+        damage++
+        console.log("stronger")
+      }
+    }
+    for(w=0;w<settings.types[Decks[cur][Index[cur]].type].weak.length;w++){
+      if(Decks[opp][Index[opp]].type==settings.types[Decks[cur][Index[cur]].type].weak[w]){
+        damage--
+        console.log("weaker")
+      }
+    }
 
-  }else{
-    // p2
-    if(r >= p2Deck[p2Index].fire){damage++}
-    if(g >= p2Deck[p2Index].green){damage++}
-    if(b >= p2Deck[p2Index].water){damage++}
-    // damage
-    p1Deck[p1Index].health -= damage
-  }
+  console.log("red: "+r)
+  console.log("green: "+g)
+  console.log("blue: "+b)
+
+  console.log(Decks[cur][Index[cur]])
+  if(r >= Decks[cur][Index[cur]].fire){damage++;console.log("r")}
+  if(g >= Decks[cur][Index[cur]].plant){damage++;console.log("g")}
+  if(b >= Decks[cur][Index[cur]].water){damage++;console.log("b")}
+  // damage
+  if(damage < 0){damage=0}
+  Decks[opp][Index[opp]].health -= damage
+
+  console.log("damage: "+damage)
   // check if a card is dead replace if dead
-  if(p1Deck[p1Index].health < 1){
-    p1Deck.splice(p1Index,1)
-    p1Index = Math.floor(Math.random()*p1Deck.length)
+  if(Decks[cur][Index[cur]].health < 1){
+    Decks[cur].splice(Index[cur],1)
+    Index[cur] = Math.floor(Math.random()*Decks[cur].length)
   }
-  if(p2Deck[p2Index].health < 1){
-    p2Deck.splice(p2Index,1)
-    p2Index = Math.floor(Math.random()*p2Deck.length)
+  if(Decks[opp][Index[opp]].health < 1){
+    Decks[opp].splice(Index[opp],1)
+    Index[opp] = Math.floor(Math.random()*Decks[opp].length)
   }
 
   // swap turns
@@ -120,8 +149,8 @@ function roll(){
 
   updateCardsVisual()
 
-  console.log("p1 len"+p1Deck.length)
-  console.log("p2 len"+p2Deck.length)
+  console.log("p1 len"+Decks[0].length)
+  console.log("p2 len"+Decks[1].length)
 }
 
 async function autoroll() {
@@ -141,9 +170,9 @@ function checkdeck(id){
       console.log("Invalid")
       if(id == "P1Deck"){
 
-        p1Deck = null
+        Decks[0] = null
       }else{
-        p2Deck = null
+        Decks[1] = null
       }
       document.getElementById("setup").children.namedItem(id+"Invalid").hidden = false
     }
@@ -171,7 +200,7 @@ function checkdeck(id){
       if(deck[i].health == null){console.log("No health");failed();return}
       if(deck[i].imageurl == null){console.log("No icon");failed();return}
 
-      // valid type
+      // TODO valid type
       if(deck[i].type < 0 && deck[i].type > 3){
         console.log("bad type")
         failed()
@@ -212,9 +241,9 @@ function checkdeck(id){
     console.log("Deck Valid")
     if(id == "P1Deck"){
 
-      p1Deck = deck
+      Decks[0] = deck
     }else{
-      p2Deck = deck
+      Decks[1] = deck
     }
 
     document.getElementById("setup").children.namedItem(id+"Invalid").hidden = true
