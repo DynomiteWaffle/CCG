@@ -37,13 +37,10 @@ function load(){
 function updateCardsVisual(){
   if(Decks[0].length == 0){return}
   if(Decks[1].length == 0){return}
-  // TODO display types
   for(p=0;p<2;p++){
-
-    // p1
     document.getElementById("P"+(p+1)).children.namedItem("Icon").alt = Decks[p][Index[p]].name
     document.getElementById("P"+(p+1)).children.namedItem("Icon").src = Decks[p][Index[p]].imageurl
-    // document.getElementById("P1").children.namedItem("Icon").src = p1Deck[p1Index].type
+    document.getElementById("P"+(p+1)).children.namedItem("type").innerHTML = Decks[p][Index[p]].type
     document.getElementById("P"+(p+1)).children.namedItem("Health").innerHTML = Decks[p][Index[p]].health
     document.getElementById("P"+(p+1)).children.namedItem("Cost").innerHTML = Decks[p][Index[p]].cost
     document.getElementById("P"+(p+1)).children.namedItem("rRoll").innerHTML = Decks[p][Index[p]].fire  
@@ -102,7 +99,7 @@ function roll(){
   // 
   // apply damage
   var damage = 0
-  // TODO type system damage
+  // type system damage
   console.log("type: "+Decks[cur][Index[cur]].type)
     for(s=0;s<settings.types[Decks[cur][Index[cur]].type].strong.length;s++){
       if(Decks[opp][Index[opp]].type==settings.types[Decks[cur][Index[cur]].type].strong[s]){
@@ -200,8 +197,8 @@ function checkdeck(id){
       if(deck[i].health == null){console.log("No health");failed();return}
       if(deck[i].imageurl == null){console.log("No icon");failed();return}
 
-      // TODO valid type
-      if(deck[i].type < 0 && deck[i].type > 3){
+      // valid type
+      if(settings.types[deck[i].type] == null){
         console.log("bad type")
         failed()
         return
