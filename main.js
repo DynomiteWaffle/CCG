@@ -250,14 +250,32 @@ function checkdeck(id){
 }
 
 function changerules(){
-  return
-  // TODO Later
   console.log("Updateing rules")
   reader.readAsText(document.getElementById("setup").children.namedItem("rules").files[0])
-  var deck = JSON.parse("{}")
+  var file = JSON.parse("{}")
+  var failed = false
   setTimeout(function(){
-    deck = JSON.parse(reader.result)
-    console.log(deck[0])
-  },1000)
-  // TODO recheck decks
+    file = JSON.parse(reader.result)
+    console.log(file)
+    // simple checks
+    if(file["0CostHealth"] == null){console.log("No 0Costhealth");failed=true;return}
+    if(file.maxHealth == null){console.log("No max health");failed=true;return}
+    if(file.heathCost == null){console.log("No health cost");failed=true;return}
+    if(file.maxCost == null){console.log("No max cost");failed=true;return}
+    if(file.cardMaxCost == null){console.log("No card max cost");failed=true;return}
+    if(file.cardMinCost == null){console.log("No card min cost");failed=true;return}
+    if(file.attackCost == null){console.log("No attack cost");failed=true;return}
+    if(file.types == null){console.log("No types");failed=true;return}
+    // TODO deeper type checks
+
+  },10)
+  // TODO recheck decks -- cur reset decks
+  if (failed == false){
+    console.log("Invalid")
+    Decks[0] = null
+    Decks[1] = null
+    document.getElementById("setup").children.namedItem("P1DeckInvalid").hidden = false
+    document.getElementById("setup").children.namedItem("P2DeckInvalid").hidden = false
+
+  }
 }
